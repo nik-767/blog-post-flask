@@ -1,0 +1,9 @@
+.site {
+    color: blueviolet;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+} 
