@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, session, request, Response, redirect, url_for 
+from flask import Flask, render_template, session, request, Response, redirect, url_for , flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -69,16 +69,35 @@ def login():
 
         if user and user.password == password:
             session["user_id"] = user.id
-            return redirect(url_for("home"))
+            return redirect(url_for("create"))
     else:
         return render_template("login.html")
+    
 
+@app.route("/create",methods=["GET","POST"])
+def create():
 
+    if request.method == "POST":
 
+        title = request.form["title"]
+        content = request.form["content"]
 
+        print(title, content)
 
+        new_post = BlogPost(title=title, content=content)
 
+        db.session.add(new_post)
+        db.session.commit()
 
+        return redirect(url_for("blogpost"))
+    else:
+        return render_template("create.html")
+    
+@app.route("/blogpost")
+def blogpost():
+    posts = BlogPost.query.all()
+    
+    return render_template("post.html",posts=posts)
 
 
 with app.app_context():
@@ -86,4 +105,4 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)                      
