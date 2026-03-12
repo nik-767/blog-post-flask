@@ -89,15 +89,22 @@ def create():
         db.session.add(new_post)
         db.session.commit()
 
-        return redirect(url_for("blogpost"))
+        return redirect(url_for("post", id=new_post.id))
     else:
         return render_template("create.html")
     
 @app.route("/blogpost")
 def blogpost():
-    posts = BlogPost.query.all()
+    posts = BlogPost.query.order_by(BlogPost.date_created.desc()).all()
     
     return render_template("post.html",posts=posts)
+
+@app.route("/post/<id>")
+def post(id):
+    single = BlogPost.query.get(id)
+
+    return render_template("single.html", single=single)
+
 
 
 with app.app_context():
